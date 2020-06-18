@@ -63,7 +63,6 @@ class Car(models.Model):
     v_state = models.TextField(max_length=30, help_text="vehicle's state of registration", null=True, blank=True)
     v_country = models.TextField(max_length=30, help_text="vehicle's country of registration", null=True, blank=True)
 
-
     @property
     def is_insured(self):
         if self.insurance is None:
@@ -92,6 +91,7 @@ class Car(models.Model):
 class Insurance(models.Model):
     """model for each car's insurance"""
     driver = models.ForeignKey('Driver', on_delete=models.SET_NULL, blank=True, null=True)
+
     company = models.TextField(max_length=200, help_text="Company issuing insurance")
     policy_num = models.TextField(max_length=30, unique=True, help_text="Insurance Policy number")
     expiry = models.DateField(help_text="Insurance expiration date")
@@ -139,4 +139,19 @@ class Officer(models.Model):
 
     def __str__(self):
         """:returns string for representing the officer"""
-        return str(self.rank + " " + self.last_name + ", " + self.first_name)
+        officer_str = str()
+        if not(self.rank is None or self.rank==""):
+            officer_str+=self.rank + " "
+
+        if not(self.last_name is None or self.last_name==""):
+            officer_str+=self.last_name + " "
+
+        if not(self.first_name is None or self.first_name==""):
+            officer_str+=self.first_name + " "
+
+        if officer_str=="":
+            officer_str = f"Officer {self.id}"
+        else:
+            officer_str = officer_str.strip()
+
+        return officer_str
