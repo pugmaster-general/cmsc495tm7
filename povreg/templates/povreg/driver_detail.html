@@ -4,8 +4,11 @@
 <title>Driver Details</title>
 {% endblock %}
 
-{% block content %}
+{% block page_header %}
 <h1>{{ driver }}</h1>
+{% endblock %}
+
+{% block content %}
 
 <p><strong>Last Name:</strong> {{ driver.last_name }}</p>
 <p><strong>First Name:</strong> {{ driver.first_name }}</p>

@@ -4,8 +4,11 @@
 <title>Car List</title>
 {% endblock %}
 
-{% block content %}
+{% block page_header %}
 <h1>Car List</h1>
+{% endblock %}
+
+{% block content %}
     {% if car_list %}
     <ul>
         {% for car in car_list %}

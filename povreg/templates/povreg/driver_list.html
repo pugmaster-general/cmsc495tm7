@@ -4,8 +4,11 @@
 <title>Driver List</title>
 {% endblock %}
 
-{% block content %}
+{% block page_header %}
 <h1>Driver List</h1>
+{% endblock %}
+
+{% block content %}
     {% if driver_list %}
     <ul>
         {% for driver in driver_list %}

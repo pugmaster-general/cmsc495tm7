@@ -4,8 +4,11 @@
 <title>Car Details</title>
 {% endblock %}
 
-{% block content %}
+{% block page_header %}
 <h1>{{ car }}</h1>
+{% endblock %}
+
+{% block content %}
 
 <p><strong>Plate:</strong> {{ car.v_plate }}</p>
 <p><strong>Make:</strong> {{ car.v_make }}</p>
