@@ -28,7 +28,7 @@ class Driver(models.Model):
 
     @property
     def is_expired(self):
-        if self.license_expiry > date.today():
+        if self.license_expiry < date.today():
             return True
         return False
 
