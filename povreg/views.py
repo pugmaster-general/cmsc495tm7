@@ -23,6 +23,7 @@ def index(request):
     # render HTML template index.html with date in context
     return render(request, 'index.html', context=context)
 
+
 # car list view
 class CarListView(generic.ListView):
     model = Car
