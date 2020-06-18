@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>Car</title>
+{% endblock %}
+
+{% block content %}
+<h1>Car List</h1>
+    {% if car_list %}
+    <ul>
+        {% for car in car_list %}
+        <li><a href="">{{ car }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>There are no cars in the database</p>
+    {% endif %}
+{% endblock %}
