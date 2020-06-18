@@ -24,5 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('povreg/', include('povreg.urls')),
     path('', RedirectView.as_view(url='povreg/', permanent=True)),
-    static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
 ]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
