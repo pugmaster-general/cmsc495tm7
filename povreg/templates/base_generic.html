@@ -16,14 +16,16 @@
 </head>
 <body>
     <div class="container-fluid">
-            <div class="jumbotron">
-                {% load static %}
-                <img src="{% static 'povreg/images/logo.svg' %}"
-                     alt="umgc logo"
-                     height="100"
-                     width="250"
-                     style="float:left; padding: 20px"
-                >
+        {% load static %}
+        <style>
+                .jumbotron-header-img{
+                    background-image: url("{% static 'povreg/images/image.jpeg' %}");
+                    background-size: cover;
+                    color: white;
+                }
+            </style>
+            <div class="jumbotron jumbotron-header-img">
+
                 {% block page_header %}
                 {% endblock %}
             </div>
