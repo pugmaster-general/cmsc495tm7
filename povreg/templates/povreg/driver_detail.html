@@ -1,0 +1,37 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>Driver Details</title>
+{% endblock %}
+
+{% block content %}
+<h1>{{ driver }}</h1>
+
+<p><strong>Last Name:</strong> {{ driver.last_name }}</p>
+<p><strong>First Name:</strong> {{ driver.first_name }}</p>
+<p><strong>Date of Birth:</strong> {{ driver.dob }}</p>
+<p><strong>Phone Number:</strong> {{ driver.phone_num }}</p>
+<p><strong>Country:</strong> {{ driver.country }}</p>
+<p><strong>State:</strong> {{ driver.state }}</p>
+<p><strong>License Number:</strong> {{ driver.license_num }}</p>
+<p class="{% if driver.is_expired %}text-danger{% else %}text-success{% endif %}">
+    <strong>License Expiration Date:</strong> {{ driver.license_expiry }}</p>
+
+<!--car-->
+<div style="margin-left:10px; margin-top:10px">
+    <hr>
+    <h4>Cars</h4>
+    {% for drivers_car in driver.car_set.all %}
+    <p><a href="{{ drivers_car.get_absolute_url }}">{{drivers_car}}</a></p>
+    {% endfor %}
+</div>
+
+<!--insurance-->
+<div style="margin-left:10px; margin-top:10px">
+    <hr>
+    <h4>Insurance</h4>
+    {% for drivers_insurance in driver.insurance_set.all %}
+    <p><a href="{{ drivers_insurance.get_absolute_url }}">{{ drivers_insurance }}</a></p>
+    {% endfor %}
+</div>
+{% endblock %}

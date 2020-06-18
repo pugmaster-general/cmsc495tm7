@@ -7,18 +7,25 @@
 {% block content %}
 <h1>{{ car }}</h1>
 
+<p><strong>Plate:</strong> {{ car.v_plate }}</p>
 <p><strong>Make:</strong> {{ car.v_make }}</p>
 <p><strong>Model:</strong> {{ car.v_model }}</p>
-<p><strong>Plate:</strong> {{ car.v_plate }}</p>
-<p><strong></strong></p>
-
+<p><strong>Country:</strong> {{ car.v_country }}</p>
+<p><strong>State:</strong> {{ car.v_state }}</p>
+<p><strong>Commercial:</strong> {{ car.is_commercial }}</p>
+<p><strong>Status:</strong> {{ car.status }}</p>
+<p><strong>Registration:</strong> {{ car.registration }}</p>
+<p><strong>Insured:</strong> {{ car.is_insured }}</p>
+<p><strong>Owner: </strong> {{ car.owner }}</p>
 
 <!--driver-->
-<div style="margic-lief:10px; margin-top:10px">
-
+<div style="margin-left:10px; margin-top:10px">
+    <hr>
+    <p><strong>Driver: </strong><a href="{{ car.driver.get_absolute_url }}"> {{ car.driver }}</a></p>
 </div>
 <!--insurance-->
-<div style="margic-lief:10px; margin-top:10px">
-
+<div style="margin-left:10px; margin-top:10px">
+    <hr>
+    <p><strong>Insurance: </strong><a href="{{ car.insurance.get_absolute_url }}"> {{ car.insurance }}</a></p>
 </div>
 {% endblock %}

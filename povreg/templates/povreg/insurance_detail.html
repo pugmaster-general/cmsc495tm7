@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>Insurance Details</title>
+{% endblock %}
+
+{% block content %}
+<h1>{{ insurance }}</h1>
+
+<p><strong>Company:</strong> {{ insurance.company }}</p>
+<p><strong>Policy Number:</strong> {{ insurance.policy_num }}</p>
+<p><strong>Coverage Type:</strong> {{ insurance.coverage_type }}</p>
+<p class="{% if insurance.is_expired %}text-danger{% else %}text-success{% endif %}"><strong>
+    Expiration Date:</strong> {{ insurance.expiry }}</p>
+<p class="{% if insurance.status == 'Expired' %}text-danger
+    {% elif insurance.status == 'Suspended' %} text-warning
+    {% else %} text-success {% endif %}"><strong>Status:</strong> {{ insurance.get_status_display }}</p>
+
+<!--driver-->
+<div style="margin-left:10px; margin-top:10px">
+    <hr>
+    <p><strong>Driver:</strong> <a href="{{ insurance.driver.get_absolute_url }}">{{ insurance.driver }}</a></p>
+</div>
+
+<!--car-->
+<div style="margin-left:10px; margin-top:10px">
+    <hr>
+    <p><strong>Car:</strong> <a href="{{ insurance.car.get_absolute_url }}">{{ insurance.car }}</a></p>
+</div>
+{% endblock %}

@@ -1,15 +1,15 @@
 {% extends "base_generic.html" %}
 
 {% block title %}
-<title>Car List</title>
+<title>Insurance List</title>
 {% endblock %}
 
 {% block content %}
-<h1>Car List</h1>
-    {% if car_list %}
+<h1>Insurance List</h1>
+    {% if insurance_list %}
     <ul>
-        {% for car in car_list %}
-        <li><a href="{{ car.get_absolute_url }}">{{ car }}</a></li>
+        {% for insurance in insurance_list %}
+        <li><a href="{{ insurance.get_absolute_url }}">{{ insurance }}</a></li>
         {% endfor %}
     </ul>
     {% else %}

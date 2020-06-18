@@ -23,6 +23,7 @@ def index(request):
     # render HTML template index.html with date in context
     return render(request, 'index.html', context=context)
 
+
 # car list view
 class CarListView(generic.ListView):
     model = Car
@@ -33,3 +34,23 @@ class CarListView(generic.ListView):
 class CarDetailView(generic.DetailView):
     model = Car
 
+
+# driver list view
+class DriverListView(generic.ListView):
+    model = Driver
+    paginate_by = 25
+
+
+# driver detail view
+class DriverDetailView(generic.DetailView):
+    model = Driver
+
+
+# insurance list view
+class InsuranceListView(generic.ListView):
+    model = Insurance
+    paginate_by = 25
+
+
+class InsuranceDetailView(generic.DetailView):
+    model = Insurance
