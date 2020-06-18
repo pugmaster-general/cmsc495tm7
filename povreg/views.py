@@ -44,3 +44,13 @@ class DriverListView(generic.ListView):
 # driver detail view
 class DriverDetailView(generic.DetailView):
     model = Driver
+
+
+# insurance list view
+class InsuranceListView(generic.ListView):
+    model = Insurance
+    paginate_by = 25
+
+
+class InsuranceDetailView(generic.DetailView):
+    model = Insurance

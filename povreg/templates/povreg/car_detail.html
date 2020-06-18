@@ -26,6 +26,6 @@
 <!--insurance-->
 <div style="margin-left:10px; margin-top:10px">
     <hr>
-    <p><strong>Insurance: </strong><a href=""> {{ car.insurance }}</a></p>
+    <p><strong>Insurance: </strong><a href="{{ car.insurance.get_absolute_url }}"> {{ car.insurance }}</a></p>
 </div>
 {% endblock %}

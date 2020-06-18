@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>Insurance List</title>
+{% endblock %}
+
+{% block content %}
+<h1>Insurance List</h1>
+    {% if insurance_list %}
+    <ul>
+        {% for insurance in insurance_list %}
+        <li><a href="{{ insurance.get_absolute_url }}">{{ insurance }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>There are no cars in the database</p>
+    {% endif %}
+{% endblock %}

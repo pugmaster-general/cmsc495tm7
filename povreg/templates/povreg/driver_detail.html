@@ -31,7 +31,7 @@
     <hr>
     <h4>Insurance</h4>
     {% for drivers_insurance in driver.insurance_set.all %}
-    <p><a href="">{{ drivers_insurance }}</a></p>
+    <p><a href="{{ drivers_insurance.get_absolute_url }}">{{ drivers_insurance }}</a></p>
     {% endfor %}
 </div>
 {% endblock %}
