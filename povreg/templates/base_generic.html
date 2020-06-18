@@ -16,6 +16,19 @@
 </head>
 <body>
     <div class="container-fluid">
+        {% load static %}
+        <style>
+                .jumbotron-header-img{
+                    background-image: url("{% static 'povreg/images/image.jpeg' %}");
+                    background-size: cover;
+                    color: white;
+                }
+            </style>
+            <div class="jumbotron jumbotron-header-img">
+
+                {% block page_header %}
+                {% endblock %}
+            </div>
         <div class="row">
             <div class="col-sm-2">
 
@@ -28,6 +41,7 @@
                 {% endblock %}
 
             </div>
+
             <div class="col-sm-10 ">
 
                 {% block content %}

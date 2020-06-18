@@ -4,8 +4,11 @@
 <title>Insurance List</title>
 {% endblock %}
 
-{% block content %}
+{% block page_header %}
 <h1>Insurance List</h1>
+{% endblock %}
+
+{% block content %}
     {% if insurance_list %}
     <ul>
         {% for insurance in insurance_list %}

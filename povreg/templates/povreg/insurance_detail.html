@@ -4,8 +4,11 @@
 <title>Insurance Details</title>
 {% endblock %}
 
-{% block content %}
+{% block page_header %}
 <h1>{{ insurance }}</h1>
+{% endblock %}
+
+{% block content %}
 
 <p><strong>Company:</strong> {{ insurance.company }}</p>
 <p><strong>Policy Number:</strong> {{ insurance.policy_num }}</p>
