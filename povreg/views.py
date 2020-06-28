@@ -82,12 +82,12 @@ class DriverDetailView(generic.DetailView):
     model = Driver
 
 
-# car search form
+# driver search form
 class DriverSearchForm(generic.TemplateView):
     template_name = 'povreg/driver_search.html'
 
 
-# car search results view
+# driver search results view
 class DriverSearchResultsView(generic.ListView):
     model = Driver
     template_name = 'povreg/driver_search_results.html'
@@ -127,3 +127,29 @@ class InsuranceListView(generic.ListView):
 
 class InsuranceDetailView(generic.DetailView):
     model = Insurance
+
+
+# insurance search form
+class InsuranceSearchForm(generic.TemplateView):
+    template_name = 'povreg/insurance_search.html'
+
+
+# insurance search results view
+class InsuranceSearchResultsView(generic.ListView):
+    model = Insurance
+    template_name = 'povreg/insurance_search_results.html'
+
+    def get_queryset(self):
+        q = self.request.GET
+        query = Q()
+        if q.get('policy_num') is not "":
+            query.add(Q(policy_num__icontains=q.get('policy_num')), Q.AND)
+
+        if q.get('company') is not "":
+            query.add(Q(company__icontains=q.get('company')), Q.AND)
+
+        if q.get('coverage_type') is not "":
+            query.add(Q(coverage_type=q.get('coverage_type')), Q.AND)
+
+        object_list = Insurance.objects.filter(query)
+        return object_list

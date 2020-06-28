@@ -13,5 +13,6 @@ urlpatterns= [
     path('driver_search_results/', views.DriverSearchResultsView.as_view(), name='driver-search-results'),
     path('insurance/', views.InsuranceListView.as_view(), name="insurance"),
     path('insurance/<int:pk>', views.InsuranceDetailView.as_view(), name="insurance-detail"),
-
+    path('insurance_search/', views.InsuranceSearchForm.as_view(), name="insurance-search"),
+    path('insurance_search_results/', views.InsuranceSearchResultsView.as_view(), name="insurance-search-results"),
 ]
