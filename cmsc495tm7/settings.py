@@ -26,7 +26,8 @@ SECRET_KEY = 'lx)(0a0yucogf9094jy-z86ie2t9@p374xxg(4a0d-b!5i+hk2'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'cmsc495tm7.pythonanywhere.com'
+    'cmsc495tm7.pythonanywhere.com',
+    'localhost'
 ]
 
 
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'cmsc495tm7.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,3 +123,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# redirect to home url after login (default redirects to /accounts/profile/)
+LOGIN_REDIRECT_URL = '/'
