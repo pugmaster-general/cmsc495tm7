@@ -3,8 +3,13 @@ from povreg.models import Car, Driver, Insurance, Officer
 from django.views import generic
 from django.db.models import Q
 from django.template import loader
+from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 # Create your views here.
+
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Officers').exists())
 def index(request):
     """view function for the home page of the site"""
 
@@ -26,23 +31,32 @@ def index(request):
 
 
 # car list view
-class CarListView(generic.ListView):
+class CarListView(UserPassesTestMixin, generic.ListView):
     model = Car
     paginate_by = 25
 
+    def test_func(self):
+        return self.request.user.groups.filter(name='Officers').exists()
+
 
 # car detail view
-class CarDetailView(generic.DetailView):
+class CarDetailView(UserPassesTestMixin, generic.DetailView):
     model = Car
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Officers').exists()
 
 
 # car search form
-class CarSearchForm(generic.TemplateView):
+class CarSearchForm(UserPassesTestMixin, generic.TemplateView):
     template_name = 'povreg/car_search.html'
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Officers').exists()
 
 
 # car search results view
-class CarSearchResultsView(generic.ListView):
+class CarSearchResultsView(UserPassesTestMixin, generic.ListView):
     model = Car
     template_name = 'povreg/car_search_results.html'
 
@@ -70,25 +84,37 @@ class CarSearchResultsView(generic.ListView):
         object_list = Car.objects.filter(query)
         return object_list
 
+    def test_func(self):
+        return self.request.user.groups.filter(name='Officers').exists()
+
 
 # driver list view
-class DriverListView(generic.ListView):
+class DriverListView(UserPassesTestMixin, generic.ListView):
     model = Driver
     paginate_by = 25
 
+    def test_func(self):
+        return self.request.user.groups.filter(name='Officers').exists()
+
 
 # driver detail view
-class DriverDetailView(generic.DetailView):
+class DriverDetailView(UserPassesTestMixin, generic.DetailView):
     model = Driver
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Officers').exists()
 
 
 # driver search form
-class DriverSearchForm(generic.TemplateView):
+class DriverSearchForm(UserPassesTestMixin, generic.TemplateView):
     template_name = 'povreg/driver_search.html'
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Officers').exists()
 
 
 # driver search results view
-class DriverSearchResultsView(generic.ListView):
+class DriverSearchResultsView(UserPassesTestMixin, generic.ListView):
     model = Driver
     template_name = 'povreg/driver_search_results.html'
 
@@ -119,23 +145,36 @@ class DriverSearchResultsView(generic.ListView):
         object_list = Driver.objects.filter(query)
         return object_list
 
+    def test_func(self):
+        return self.request.user.groups.filter(name='Officers').exists()
+
+
 # insurance list view
-class InsuranceListView(generic.ListView):
+class InsuranceListView(UserPassesTestMixin, generic.ListView):
     model = Insurance
     paginate_by = 25
 
+    def test_func(self):
+        return self.request.user.groups.filter(name='Officers').exists()
 
-class InsuranceDetailView(generic.DetailView):
+
+class InsuranceDetailView(UserPassesTestMixin, generic.DetailView):
     model = Insurance
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Officers').exists()
 
 
 # insurance search form
-class InsuranceSearchForm(generic.TemplateView):
+class InsuranceSearchForm(UserPassesTestMixin, generic.TemplateView):
     template_name = 'povreg/insurance_search.html'
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Officers').exists()
 
 
 # insurance search results view
-class InsuranceSearchResultsView(generic.ListView):
+class InsuranceSearchResultsView(UserPassesTestMixin, generic.ListView):
     model = Insurance
     template_name = 'povreg/insurance_search_results.html'
 
@@ -153,3 +192,6 @@ class InsuranceSearchResultsView(generic.ListView):
 
         object_list = Insurance.objects.filter(query)
         return object_list
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Officers').exists()
