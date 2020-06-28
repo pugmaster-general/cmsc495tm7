@@ -38,21 +38,42 @@ class CarDetailView(generic.DetailView):
 
 # car search form
 class CarSearchForm(generic.TemplateView):
-    template = loader.get_template('povreg/find_car.html')
+    template_name = 'povreg/car_search.html'
 
 
 # car search results view
 class CarSearchResultsView(generic.ListView):
     model = Car
-    paginate_by = 25
-    template = loader.get_template('povreg/car_search_results.html')
-    def get_queryset(self):
-        query = self.request.GET.get('q')
-        object_list = Car.objects.filter(
-            Q(name__icontains="") |
+    template_name = 'povreg/car_search_results.html'
 
-        )
+    def get_queryset(self):
+        q = self.request.GET
+        query = Q()
+        if q.get('v_plate') is not "":
+            query.add(Q(v_plate__icontains=q.get('v_plate')), Q.OR)
+
+        if q.get('v_make') is not "":
+            query.add(Q(v_make__icontains=q.get('v_make')), Q.OR)
+
+        if q.get('v_model') is not "":
+            query.add(Q(v_model_icontains=q.get('v_model')), Q.OR)
+
+        if q.get('registration') is not "":
+            query.add(Q(v_registration__icontains=q.get('registration')), Q.OR)
+
+        if q.get('v_country') is not "":
+            query.add(Q(v_country__icontains=q.get('v_country')), Q.OR)
+
+        if q.get('v_state') is not "":
+            query.add(Q(v_state__icontains=q.get('v_state')), Q.OR)
+
+        object_list = Car.objects.filter(query)
         return object_list
+
+
+
+
+
 
 # driver list view
 class DriverListView(generic.ListView):
