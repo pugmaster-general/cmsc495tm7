@@ -1,0 +1,29 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>Find Car</title>
+{% endblock %}
+
+{% block page_header %}
+<h1>Find Car</h1>
+{% endblock %}
+
+
+{% block content %}
+<h3>Fill one or more fields</h3>
+<form action="{% url 'car-search-results' %}" method="get">
+    <label for="v_plate">Plate:</label><br>
+    <input name="v_plate" id="v_plate" type="text" placeholder="Vehicle Plate"><br>
+    <label for="v_make">Make:</label><br>
+    <input name="v_make" id="v_make" type="text" placeholder="Vehicle Make"><br>
+    <label for="v_model">Model:</label><br>
+    <input name="v_model" id="v_model" type="text" placeholder="Vehicle Model"><br>
+    <label for="registration">Registration:</label><br>
+    <input name="registration" id="registration" type="text" placeholder="Vehicle Registration"><br>
+    <label for="v_country">Country:</label><br>
+    <input name="v_country" id="v_country" type="text" placeholder="Vehicle Country"><br>
+    <label for="v_state">State:</label><br>
+    <input name="v_state" id="v_state" type="text" placeholder="Vehicle State"><br>
+    <input type="submit" value="submit">
+</form>
+{% endblock %}

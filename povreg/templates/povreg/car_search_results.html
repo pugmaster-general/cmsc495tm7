@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>Car Search Results</title>
+{% endblock %}
+
+{% block page_header %}
+<h1>Car Search Results</h1>
+{% endblock %}
+
+{% block content %}
+    {% if object_list %}
+    <h4>Cars Found: {{ object_list.count }}</h4>
+    <ul>
+        {% for car in object_list %}
+        <li><a href="{{ car.get_absolute_url }}">{{ car }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No cars matched search</p>
+    {% endif %}
+{% endblock %}
