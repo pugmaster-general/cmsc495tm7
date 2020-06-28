@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from povreg.models import Car, Driver, Insurance, Officer
 from django.views import generic
-
+from django.db.models import Q
+from django.template import loader
 
 # Create your views here.
 def index(request):
@@ -34,6 +35,24 @@ class CarListView(generic.ListView):
 class CarDetailView(generic.DetailView):
     model = Car
 
+
+# car search form
+class CarSearchForm(generic.TemplateView):
+    template = loader.get_template('povreg/find_car.html')
+
+
+# car search results view
+class CarSearchResultsView(generic.ListView):
+    model = Car
+    paginate_by = 25
+    template = loader.get_template('povreg/car_search_results.html')
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        object_list = Car.objects.filter(
+            Q(name__icontains="") |
+
+        )
+        return object_list
 
 # driver list view
 class DriverListView(generic.ListView):
