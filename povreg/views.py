@@ -50,29 +50,25 @@ class CarSearchResultsView(generic.ListView):
         q = self.request.GET
         query = Q()
         if q.get('v_plate') is not "":
-            query.add(Q(v_plate__icontains=q.get('v_plate')), Q.OR)
+            query.add(Q(v_plate__icontains=q.get('v_plate')), Q.AND)
 
         if q.get('v_make') is not "":
-            query.add(Q(v_make__icontains=q.get('v_make')), Q.OR)
+            query.add(Q(v_make__icontains=q.get('v_make')), Q.AND)
 
         if q.get('v_model') is not "":
-            query.add(Q(v_model_icontains=q.get('v_model')), Q.OR)
+            query.add(Q(v_model_icontains=q.get('v_model')), Q.AND)
 
         if q.get('registration') is not "":
-            query.add(Q(v_registration__icontains=q.get('registration')), Q.OR)
+            query.add(Q(v_registration__icontains=q.get('registration')), Q.AND)
 
         if q.get('v_country') is not "":
-            query.add(Q(v_country__icontains=q.get('v_country')), Q.OR)
+            query.add(Q(v_country__icontains=q.get('v_country')), Q.AND)
 
         if q.get('v_state') is not "":
-            query.add(Q(v_state__icontains=q.get('v_state')), Q.OR)
+            query.add(Q(v_state__icontains=q.get('v_state')), Q.AND)
 
         object_list = Car.objects.filter(query)
         return object_list
-
-
-
-
 
 
 # driver list view
@@ -85,6 +81,43 @@ class DriverListView(generic.ListView):
 class DriverDetailView(generic.DetailView):
     model = Driver
 
+
+# car search form
+class DriverSearchForm(generic.TemplateView):
+    template_name = 'povreg/driver_search.html'
+
+
+# car search results view
+class DriverSearchResultsView(generic.ListView):
+    model = Driver
+    template_name = 'povreg/driver_search_results.html'
+
+    def get_queryset(self):
+        q = self.request.GET
+        query = Q()
+        if q.get('license_num') is not "":
+            query.add(Q(license_num__icontains=q.get('license_num')), Q.AND)
+
+        if q.get('first_name') is not "":
+            query.add(Q(first_name__icontains=q.get('first_name')), Q.AND)
+
+        if q.get('last_name') is not "":
+            query.add(Q(last_name__icontains=q.get('last_name')), Q.AND)
+
+        if q.get('country') is not "":
+            query.add(Q(country__icontains=q.get('country')), Q.AND)
+
+        if q.get('state') is not "":
+            query.add(Q(state__icontains=q.get('state')), Q.AND)
+
+        if q.get('phone_num') is not "":
+            query.add(Q(phone_num__icontains=q.get('phone_num')), Q.AND)
+
+        if q.get('dob') is not "":
+            query.add(Q(dob__icontains=q.get('dob')), Q.AND)
+
+        object_list = Driver.objects.filter(query)
+        return object_list
 
 # insurance list view
 class InsuranceListView(generic.ListView):

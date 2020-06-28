@@ -9,6 +9,9 @@ urlpatterns= [
     path('cars_search_results/', views.CarSearchResultsView.as_view(), name='car-search-results'),
     path('drivers/', views.DriverListView.as_view(), name="drivers"),
     path('driver/<int:pk>', views.DriverDetailView.as_view(), name="driver-detail"),
+    path('driver_search/', views.DriverSearchForm.as_view(), name='driver-search'),
+    path('driver_search_results/', views.DriverSearchResultsView.as_view(), name='driver-search-results'),
     path('insurance/', views.InsuranceListView.as_view(), name="insurance"),
     path('insurance/<int:pk>', views.InsuranceDetailView.as_view(), name="insurance-detail"),
+
 ]
