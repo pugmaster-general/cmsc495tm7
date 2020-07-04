@@ -19,6 +19,7 @@ class InsuranceInline(admin.TabularInline):
         models.TextField: {'widget': Textarea(attrs={'rows': 1, 'cols': 20})}
     }
 
+
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
     formfield_overrides = {
@@ -76,6 +77,9 @@ class DriverAdmin(admin.ModelAdmin):
         }),
         ('License', {
             'fields': ('country', 'state', 'license_num', 'license_expiry')
+        }),
+        ('Account', {
+            'fields': ('user', 'verified')
         })
     )
     inlines = [CarInline, InsuranceInline]
@@ -128,10 +132,14 @@ class OfficerAdmin(admin.ModelAdmin):
         (None, {
             'fields': ('rank', 'last_name', 'first_name')
         }),
-        ('Service',{
+        ('Service', {
             'fields': ('region', 'unit')
         }),
-        ('ID Details',{
+        ('ID Details', {
             'fields': ('badge_num', 'id_num', 'id_photo')
         }),
+        ('Account', {
+            'fields': ('user', 'verified')
+        })
+
     )
