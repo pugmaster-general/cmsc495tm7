@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>Officer Account View</title>
+{% endblock %}
+
+{% block page_header %}
+<h1>{{ officer }}</h1>
+{% endblock %}
+
+{% block content %}
+<p><strong>Rank:</strong> {{ officer.rank }}</p>
+<p><strong>Last Name:</strong> {{ officer.last_name }}</p>
+<p><strong>First Name:</strong> {{ officer.first_name }}</p>
+<hr>
+<p><strong>Region:</strong> {{ officer.region }}</p>
+<p><strong>Unit:</strong> {{ officer.unit }}</p>
+<p><strong>Badge Number:</strong> {{ officer.badge_num }}</p>
+<p><strong>ID Number:</strong> {{ officer.id_num }}</p>
+<hr>
+<p><strong>Verified:</strong> {{ officer.verified }}</p>
+{% endblock %}
+

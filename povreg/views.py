@@ -1,15 +1,20 @@
-from django.shortcuts import render
-from povreg.models import Car, Driver, Insurance, Officer
-from django.views import generic
-from django.db.models import Q
-from django.template import loader
 from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.models import User
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
+from django.db.models import Q
+from django.forms.models import inlineformset_factory
+from django.shortcuts import render, HttpResponseRedirect
+from django.template import loader
+from django.views import generic
+from .models import Car, Driver, Insurance, Officer
+from .forms import UserForm
 
 # Create your views here.
 
+
 @login_required
-@user_passes_test(lambda u: u.groups.filter(name='Officers').exists())
+#@user_passes_test(lambda u: u.groups.filter(name='Officers').exists())
 def index(request):
     """view function for the home page of the site"""
 
@@ -28,6 +33,86 @@ def index(request):
 
     # render HTML template index.html with date in context
     return render(request, 'index.html', context=context)
+
+
+# user view
+@login_required()
+def view_user(request):
+    #get pk of logged in user
+    pk = request.user.pk
+
+    #query the user object with pk from logged in user
+    user = User.objects.get(pk=pk)
+
+    #find user group
+    if user.groups.filter(name='Officers').exists():
+        group = 'officer'
+        profile = user.officer
+    elif user.groups.filter(name='Drivers').exists():
+        group = 'driver'
+        profile = user.driver
+    else:
+        group = 'none'
+        profile = None
+    context = {
+        'group': group,
+        'user': user,
+        'profile': profile,
+    }
+
+    if request.user.is_authenticated and request.user.id == user.id:
+        return render(request, 'povreg/profile_view.html', context=context)
+    else:
+        raise PermissionDenied
+
+
+# user update form
+@login_required()
+def edit_user(request):
+    #get pk of logged in user
+    pk = request.user.pk
+
+    #query the user object with pk from logged in user
+    user = User.objects.get(pk=pk)
+
+    #prepopulate UserProfileForm with retrieved user values from above
+    user_form = UserForm(instance=user)
+
+    #so-called sorcery happens below
+    if user.groups.filter(name='Officers').exists():
+        ProfileInlineFormset = inlineformset_factory(User, Officer,
+                                                     fields=('rank', 'last_name', 'first_name', 'region', 'unit', 'badge_num', 'id_num'))
+
+    elif user.groups.filter(name='Drivers').exists():
+        ProfileInlineFormset = inlineformset_factory(User, Driver,
+                                                     fields=('last_name', 'first_name', 'dob','phone_num','country','state','license_num', 'license_expiry'))
+
+    else:
+        ProfileInlineFormset = inlineformset_factory(User, model=None)
+
+    formset = ProfileInlineFormset(instance=user)
+
+    if request.user.is_authenticated and request.user.id == user.id:
+        if request.method == "POST":
+            user_form = UserForm(request.POST, request.FILES, instance=user)
+            formset = ProfileInlineFormset(request.POST, request.FILES, instance=user)
+
+            if user_form.is_valid():
+                created_user = user_form.save(commit=False)
+                formset = ProfileInlineFormset(request.POST, request.FILES, instance=created_user)
+
+                if formset.is_valid():
+                    created_user.save()
+                    formset.save()
+                    return HttpResponseRedirect('/povreg/profile_view')#this is probably wrong
+
+        return render(request, "povreg/profile_update.html", {
+            "noodle": pk,
+            "noodle_form": user_form,
+            "formset": formset,
+        })
+    else:
+        raise PermissionDenied
 
 
 # car list view
@@ -195,3 +280,18 @@ class InsuranceSearchResultsView(UserPassesTestMixin, generic.ListView):
 
     def test_func(self):
         return self.request.user.groups.filter(name='Officers').exists()
+
+
+# view of officer's account
+class OfficerSelfDetailView(UserPassesTestMixin, generic.DetailView):
+    model = Officer
+    template_name = 'povreg/officer_profile.html'
+
+    def test_func(self):
+        account_check = self.request.user.officer
+        return self.request.user.groups.filter(name='Officers').exists()
+
+
+'''  def get_queryset(self):
+return self.request.user.officer'''
+

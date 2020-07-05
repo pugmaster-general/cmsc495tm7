@@ -15,4 +15,6 @@ urlpatterns= [
     path('insurance/<int:pk>', views.InsuranceDetailView.as_view(), name="insurance-detail"),
     path('insurance_search/', views.InsuranceSearchForm.as_view(), name="insurance-search"),
     path('insurance_search_results/', views.InsuranceSearchResultsView.as_view(), name="insurance-search-results"),
+    path('profile_update/', views.edit_user, name="profile-update"),
+    path('profile_view/', views.view_user, name="profile-view"),
 ]

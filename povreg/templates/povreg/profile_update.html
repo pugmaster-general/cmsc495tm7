@@ -1,0 +1,24 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>Profile Update</title>
+{% endblock %}
+
+{% block page_header %}
+<h1>{{ user }}</h1>
+{% endblock %}
+
+{% block content %}
+    <h3>Profile Page:</h3>
+    <p>Please keep your information current</p>
+    <p>Any update must be verified by admins</p>
+
+    <form action="." method="post" class="padding">
+        {% csrf_token %} {{ noodle_form.as_p }}
+        <div class="divider"></div>
+        {{ formset.management_form }}
+        {{ formset.as_p }}
+        <button type="submit", class="btn-floating btn-large waves-light waves-effect">done</button>
+    </form>
+{% endblock %}
+
