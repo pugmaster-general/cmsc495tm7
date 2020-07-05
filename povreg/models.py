@@ -19,13 +19,13 @@ class Driver(models.Model):
     license_num = models.TextField(max_length=20, help_text='driver\'s license number', unique=True)
     license_expiry = models.DateField(help_text='driver\'s license expiration date')
 
-    verified = models.BooleanField(help_text="whether driver data is verified by admin", default=False)
-
     # state
     state = models.TextField(max_length=30, help_text="State for the driver's license", blank=True)
     country = models.TextField(max_length=30, help_text="Country for the driver's license")
 
     phone_num = models.TextField(max_length=12, help_text="the driver's phone number")
+
+    verified = models.BooleanField(help_text="whether driver data is verified by admin", default=False)
 
     #can be blank and null for now, for the data
     dob = models.DateField(help_text="driver's date of birth", blank=True, null=True)

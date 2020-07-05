@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.forms.models import inlineformset_factory
+from django.forms import TextInput, DateInput
 from django.shortcuts import render, HttpResponseRedirect
 from django.template import loader
 from django.views import generic
@@ -79,37 +80,60 @@ def edit_user(request):
     user_form = UserForm(instance=user)
 
     #so-called sorcery happens below
+    widgets = dict()
+    fields = ()
+    profile = None
     if user.groups.filter(name='Officers').exists():
-        ProfileInlineFormset = inlineformset_factory(User, Officer,
-                                                     fields=('rank', 'last_name', 'first_name', 'region', 'unit', 'badge_num', 'id_num'))
+        fields = ('rank', 'region', 'unit')
+        sub = Officer
+        profile = user.officer
+        group = "officer"
 
     elif user.groups.filter(name='Drivers').exists():
-        ProfileInlineFormset = inlineformset_factory(User, Driver,
-                                                     fields=('last_name', 'first_name', 'dob','phone_num','country','state','license_num', 'license_expiry'))
+        fields = ('last_name', 'first_name', 'phone_num', 'country', 'state', 'license_num', 'license_expiry')
+        sub = Driver
+        profile = user.driver
+        group = 'driver'
 
-    else:
-        ProfileInlineFormset = inlineformset_factory(User, model=None)
+    for i in fields:
+        widgets[str(i)] = TextInput()
 
-    formset = ProfileInlineFormset(instance=user)
+    if profile is Driver:
+        widgets['license_expiry'] = DateInput()
+
+    profile_inlineformset = inlineformset_factory(User, sub, fields=fields, widgets=widgets, can_delete=False)
+    formset = profile_inlineformset(instance=user)
 
     if request.user.is_authenticated and request.user.id == user.id:
         if request.method == "POST":
             user_form = UserForm(request.POST, request.FILES, instance=user)
-            formset = ProfileInlineFormset(request.POST, request.FILES, instance=user)
+            formset = profile_inlineformset(request.POST, request.FILES, instance=user)
 
             if user_form.is_valid():
                 created_user = user_form.save(commit=False)
-                formset = ProfileInlineFormset(request.POST, request.FILES, instance=created_user)
+                formset = profile_inlineformset(request.POST, request.FILES, instance=created_user)
 
                 if formset.is_valid():
                     created_user.save()
-                    formset.save()
-                    return HttpResponseRedirect('/povreg/profile_view')#this is probably wrong
+                    #checking for changes that need verification
+                    changes = formset[0].changed_data
 
-        return render(request, "povreg/profile_update.html", {
-            "noodle": pk,
+                    #dropping items that driver can change w/out verification
+                    if group is "driver":
+                        if changes.count('phone_num') > 0:
+                            changes.pop(changes.index('phone_num'))
+
+                        if len(changes) > 0:
+                            user.driver.verified = False
+
+                    formset.save()
+                    return HttpResponseRedirect('/povreg/profile_view')
+
+        return render(request, "povreg/profile_update.html", context={
+            "profile": profile,
             "noodle_form": user_form,
             "formset": formset,
+            "group": group,
         })
     else:
         raise PermissionDenied
@@ -280,18 +304,3 @@ class InsuranceSearchResultsView(UserPassesTestMixin, generic.ListView):
 
     def test_func(self):
         return self.request.user.groups.filter(name='Officers').exists()
-
-
-# view of officer's account
-class OfficerSelfDetailView(UserPassesTestMixin, generic.DetailView):
-    model = Officer
-    template_name = 'povreg/officer_profile.html'
-
-    def test_func(self):
-        account_check = self.request.user.officer
-        return self.request.user.groups.filter(name='Officers').exists()
-
-
-'''  def get_queryset(self):
-return self.request.user.officer'''
-

@@ -10,8 +10,7 @@
 {% endblock %}
 
 {% block content %}
-<p><strong>User First Name:</strong> {{ user.first_name }}</p>
-<p><strong>User Last Name:</strong> {{ user.last_name }}</p>
+<h3>View Profile:</h3>
 <p><strong>User Email:</strong> {{ user.email }}</p>
 <hr>
 {% if group == "officer" %}
@@ -23,9 +22,6 @@
 <p><strong>Unit:</strong> {{ profile.unit }}</p>
 <p><strong>Badge Number:</strong> {{ profile.badge_num }}</p>
 <p><strong>ID Number:</strong> {{ profile.id_num }}</p>
-<hr>
-<p class="{% if profile.verified %}text-success{% else %}text-danger{% endif %}">
-    <strong>Verified:</strong> {{ profile.verified }}</p>
 
 {% elif group == "driver" %}
 <p><strong>Last Name:</strong> {{ profile.last_name }}</p>
