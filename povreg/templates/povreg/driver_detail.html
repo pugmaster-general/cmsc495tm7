@@ -19,7 +19,8 @@
 <p><strong>License Number:</strong> {{ driver.license_num }}</p>
 <p class="{% if driver.is_expired %}text-danger{% else %}text-success{% endif %}">
     <strong>License Expiration Date:</strong> {{ driver.license_expiry }}</p>
-
+<p class="{% if profile.verified %}text-success{% else %}text-danger{% endif %}">
+    <strong>Verified:</strong> {{ driver.verified }}</p>
 <!--car-->
 <div style="margin-left:10px; margin-top:10px">
     <hr>
