@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import user_passes_test, login_required
+import django.contrib.auth.decorators
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
@@ -6,15 +6,13 @@ from django.db.models import Q
 from django.forms.models import inlineformset_factory
 from django.forms import TextInput, DateInput
 from django.shortcuts import render, HttpResponseRedirect
-from django.template import loader
 from django.views import generic
 from .models import Car, Driver, Insurance, Officer
 from .forms import UserForm
 
+
 # Create your views here.
-
-
-@login_required
+@django.contrib.auth.decorators.login_required
 #@user_passes_test(lambda u: u.groups.filter(name='Officers').exists())
 def index(request):
     """view function for the home page of the site"""
@@ -37,7 +35,7 @@ def index(request):
 
 
 # user view
-@login_required()
+@django.contrib.auth.decorators.login_required()
 def view_user(request):
     #get pk of logged in user
     pk = request.user.pk
@@ -68,7 +66,7 @@ def view_user(request):
 
 
 # user update form
-@login_required()
+@django.contrib.auth.decorators.login_required()
 def edit_user(request):
     #get pk of logged in user
     pk = request.user.pk
@@ -94,6 +92,10 @@ def edit_user(request):
         sub = Driver
         profile = user.driver
         group = 'driver'
+
+    else:
+        sub = None
+        group = None
 
     for i in fields:
         widgets[str(i)] = TextInput()

@@ -1,10 +1,7 @@
 from django.db import models
-from django.urls import reverse  # used to general URLs by reersing the URL patterns
+from django.urls import reverse
 from django.contrib.auth.models import User
 from datetime import date
-
-import uuid  # required for unique book instances
-# Create your models here.
 
 
 class Driver(models.Model):
