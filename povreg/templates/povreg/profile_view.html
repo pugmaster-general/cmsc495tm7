@@ -1,0 +1,59 @@
+
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>Profile View</title>
+{% endblock %}
+
+{% block page_header %}
+<h1>{{ user }}</h1>
+{% endblock %}
+
+{% block content %}
+<h3>View Profile:</h3>
+<p><strong>User Email:</strong> {{ user.email }}</p>
+<hr>
+{% if group == "officer" %}
+<p><strong>Rank:</strong> {{ profile.rank }}</p>
+<p><strong>Last Name:</strong> {{ profile.last_name }}</p>
+<p><strong>First Name:</strong> {{ profile.first_name }}</p>
+<hr>
+<p><strong>Region:</strong> {{ profile.region }}</p>
+<p><strong>Unit:</strong> {{ profile.unit }}</p>
+<p><strong>Badge Number:</strong> {{ profile.badge_num }}</p>
+<p><strong>ID Number:</strong> {{ profile.id_num }}</p>
+
+{% elif group == "driver" %}
+<p><strong>Last Name:</strong> {{ profile.last_name }}</p>
+<p><strong>First Name:</strong> {{ profile.first_name }}</p>
+<p><strong>Date of Birth:</strong> {{ profile.dob }}</p>
+<p><strong>Phone Number:</strong> {{ profile.phone_num }}</p>
+<p><strong>Country:</strong> {{ profile.country }}</p>
+<p><strong>State:</strong> {{ profile.state }}</p>
+<p><strong>License Number:</strong> {{ profile.license_num }}</p>
+<p class="{% if profile.is_expired %}text-danger{% else %}text-success{% endif %}">
+    <strong>License Expiration Date:</strong> {{ profile.license_expiry }}</p>
+<p class="{% if profile.verified %}text-success{% else %}text-danger{% endif %}">
+    <strong>Verified:</strong> {{ profile.verified }}</p>
+
+<!--car-->
+<div style="margin-left:10px; margin-top:10px">
+    <hr>
+    <h4>Cars</h4>
+    {% for drivers_car in profile.car_set.all %}
+    <p><a href="{{ drivers_car.get_absolute_url }}">{{drivers_car}}</a></p>
+    {% endfor %}
+</div>
+
+<!--insurance-->
+<div style="margin-left:10px; margin-top:10px">
+    <hr>
+    <h4>Insurance</h4>
+    {% for drivers_insurance in profile.insurance_set.all %}
+    <p><a href="{{ drivers_insurance.get_absolute_url }}">{{ drivers_insurance }}</a></p>
+    {% endfor %}
+</div>
+{% endif %}
+<hr>
+<a href="{% url 'profile-update' %}">Update Profile</a>
+{% endblock %}

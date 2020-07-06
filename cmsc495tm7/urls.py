@@ -28,3 +28,5 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+admin.site.site_header = "CMSC 495 Team 7 Admin"
+admin.site.index_title = "Welcom to CMSC 495 Team 7 Admin Site "

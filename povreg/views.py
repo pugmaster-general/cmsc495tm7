@@ -1,15 +1,19 @@
-from django.shortcuts import render
-from povreg.models import Car, Driver, Insurance, Officer
-from django.views import generic
-from django.db.models import Q
-from django.template import loader
-from django.contrib.auth.decorators import user_passes_test, login_required
+import django.contrib.auth.decorators
+from django.contrib.auth.models import User
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
+from django.db.models import Q
+from django.forms.models import inlineformset_factory
+from django.forms import TextInput, DateInput
+from django.shortcuts import render, HttpResponseRedirect
+from django.views import generic
+from .models import Car, Driver, Insurance, Officer
+from .forms import UserForm
+
 
 # Create your views here.
-
-@login_required
-@user_passes_test(lambda u: u.groups.filter(name='Officers').exists())
+@django.contrib.auth.decorators.login_required
+#@user_passes_test(lambda u: u.groups.filter(name='Officers').exists())
 def index(request):
     """view function for the home page of the site"""
 
@@ -28,6 +32,113 @@ def index(request):
 
     # render HTML template index.html with date in context
     return render(request, 'index.html', context=context)
+
+
+# user view
+@django.contrib.auth.decorators.login_required()
+def view_user(request):
+    #get pk of logged in user
+    pk = request.user.pk
+
+    #query the user object with pk from logged in user
+    user = User.objects.get(pk=pk)
+
+    #find user group
+    if user.groups.filter(name='Officers').exists():
+        group = 'officer'
+        profile = user.officer
+    elif user.groups.filter(name='Drivers').exists():
+        group = 'driver'
+        profile = user.driver
+    else:
+        group = 'none'
+        profile = None
+    context = {
+        'group': group,
+        'user': user,
+        'profile': profile,
+    }
+
+    if request.user.is_authenticated and request.user.id == user.id:
+        return render(request, 'povreg/profile_view.html', context=context)
+    else:
+        raise PermissionDenied
+
+
+# user update form
+@django.contrib.auth.decorators.login_required()
+def edit_user(request):
+    #get pk of logged in user
+    pk = request.user.pk
+
+    #query the user object with pk from logged in user
+    user = User.objects.get(pk=pk)
+
+    #prepopulate UserProfileForm with retrieved user values from above
+    user_form = UserForm(instance=user)
+
+    #so-called sorcery happens below
+    widgets = dict()
+    fields = ()
+    profile = None
+    if user.groups.filter(name='Officers').exists():
+        fields = ('rank', 'region', 'unit')
+        sub = Officer
+        profile = user.officer
+        group = "officer"
+
+    elif user.groups.filter(name='Drivers').exists():
+        fields = ('last_name', 'first_name', 'phone_num', 'country', 'state', 'license_num', 'license_expiry')
+        sub = Driver
+        profile = user.driver
+        group = 'driver'
+
+    else:
+        sub = None
+        group = None
+
+    for i in fields:
+        widgets[str(i)] = TextInput()
+
+    if profile is Driver:
+        widgets['license_expiry'] = DateInput()
+
+    profile_inlineformset = inlineformset_factory(User, sub, fields=fields, widgets=widgets, can_delete=False)
+    formset = profile_inlineformset(instance=user)
+
+    if request.user.is_authenticated and request.user.id == user.id:
+        if request.method == "POST":
+            user_form = UserForm(request.POST, request.FILES, instance=user)
+            formset = profile_inlineformset(request.POST, request.FILES, instance=user)
+
+            if user_form.is_valid():
+                created_user = user_form.save(commit=False)
+                formset = profile_inlineformset(request.POST, request.FILES, instance=created_user)
+
+                if formset.is_valid():
+                    created_user.save()
+                    #checking for changes that need verification
+                    changes = formset[0].changed_data
+
+                    #dropping items that driver can change w/out verification
+                    if group is "driver":
+                        if changes.count('phone_num') > 0:
+                            changes.pop(changes.index('phone_num'))
+
+                        if len(changes) > 0:
+                            user.driver.verified = False
+
+                    formset.save()
+                    return HttpResponseRedirect('/povreg/profile_view')
+
+        return render(request, "povreg/profile_update.html", context={
+            "profile": profile,
+            "noodle_form": user_form,
+            "formset": formset,
+            "group": group,
+        })
+    else:
+        raise PermissionDenied
 
 
 # car list view

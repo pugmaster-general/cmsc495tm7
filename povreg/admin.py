@@ -3,9 +3,8 @@ from .models import Car, Driver, Insurance, Officer
 from django.forms import Textarea
 from django.db import models
 
+
 # Register your models here.
-
-
 class CarInline(admin.TabularInline):
     model = Car
     formfield_overrides = {
@@ -54,6 +53,15 @@ class CarAdmin(admin.ModelAdmin):
     )
 
 
+def verify_driver(modelAdmin, request, queryset):
+    for driver in queryset:
+        driver.verified = True
+        driver.save()
+
+
+verify_driver.short_description = "Verify Data"
+
+
 @admin.register(Driver)
 class DriverAdmin(admin.ModelAdmin):
     formfield_overrides = {
@@ -69,8 +77,9 @@ class DriverAdmin(admin.ModelAdmin):
         'license_num',
         'license_expiry',
         'is_expired',
+        'verified',
     )
-    list_filter = ('country', 'state')
+    list_filter = ('country', 'state', 'verified')
     fieldsets = (
         (None, {
             'fields': ('last_name', 'first_name', 'dob', 'phone_num')
@@ -79,10 +88,11 @@ class DriverAdmin(admin.ModelAdmin):
             'fields': ('country', 'state', 'license_num', 'license_expiry')
         }),
         ('Account', {
-            'fields': ('user', 'verified')
+            'fields': ('user', 'verified',)
         })
     )
     inlines = [CarInline, InsuranceInline]
+    actions = [verify_driver, ]
 
 
 @admin.register(Insurance)
