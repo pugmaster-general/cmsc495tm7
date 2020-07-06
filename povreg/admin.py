@@ -53,6 +53,15 @@ class CarAdmin(admin.ModelAdmin):
     )
 
 
+def verify_driver(modelAdmin, request, queryset):
+    for driver in queryset:
+        driver.verified = True
+        driver.save()
+
+
+verify_driver.short_description = "Verify Data"
+
+
 @admin.register(Driver)
 class DriverAdmin(admin.ModelAdmin):
     formfield_overrides = {
@@ -83,6 +92,7 @@ class DriverAdmin(admin.ModelAdmin):
         })
     )
     inlines = [CarInline, InsuranceInline]
+    actions = [verify_driver, ]
 
 
 @admin.register(Insurance)
