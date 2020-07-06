@@ -15,122 +15,90 @@
     {% endif %}
     <form action="." method="post" class="padding">
         {% csrf_token %}
-
+        {{ noodle_form.email.errors }}
         <p title="{{ noodle_form.email.help_text }}">
             <strong>{{ noodle_form.email.label_tag }}</strong>
             {{ noodle_form.email }}
         </p>
-        {% if noodle_form.email.errors %}
-            {% for error in noodle_form.email.errors %}
-                {{ error|escape }}
-            {% endfor %}
-        {% endif %}
-        <hr>
-        {{ formset.management_form }}
 
+        <hr>
         {% if group == "officer" %}
+            {{ formset.management_form }}
             {% for form in formset %}
+
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+
+                {{ form.rank.errors }}
                 <p title="{{ form.rank.help_text }}">
                     <strong>{{ form.rank.label_tag }}</strong>
                     {{ form.rank }}</p>
-                {% if form.rank.errors %}
-                    {% for error in form.rank.errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
+
                 <p><strong>Last Name:</strong> {{ profile.last_name }}</p>
                 <p><strong>First Name:</strong> {{ profile.first_name }}</p>
                 <hr>
+
+                {{ form.region.errors }}
                 <p title="{{ form.region.help_text }}">
                     <strong>{{ form.region.label_tag }}</strong>
                     {{ form.region }}</p>
-                {% if form.region.errors %}
-                    {% for error in form.region.errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
+
+                {{ form.unit.errors }}
                 <p title="{{ form.unit.help_text }}">
                     <strong>{{ form.unit.label_tag }}</strong>
                     {{ form.unit }}</p>
-                {% if form.unit.errors %}
-                    {% for error in form.unit.errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
+
                 <p><strong>Badge Number:</strong> {{ profile.badge_num }}</p>
                 <p><strong>ID Number:</strong> {{ profile.id_num }}</p>
             {% endfor %}
-        {% elif group == "driver" %}
-            {% for form in formset %}
 
+        {% elif group == "driver" %}
+            {{ formset.management_form }}
+            {% for form in formset %}
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+
+                {{ form.last_name.errors }}
                 <p title="{{ form.last_name.help_text }}">
                     <strong>{{ form.last_name.label_tag }}</strong>
                     {{ form.last_name }}</p>
-                {% if form.last_name.errors %}
-                    {% for error in form.last_name.errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
 
+                {{ form.first_name.errors }}
                 <p title="{{ form.first_name.help_text }}">
                     <strong>{{ form.first_name.label_tag }}</strong>
                     {{ form.first_name }}</p>
-                {% if form.first_name.errors %}
-                    {% for error in form.first_name.errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
 
                 <p><strong>Date of Birth:</strong> {{ profile.dob }}</p>
 
+                {{ form.phone_num.errors }}
                 <p title="{{ form.phone_num.help_text }}">
                     <strong><label for="{{ form.phone_num.id_for_label }}">Phone Number:</label></strong>
                     {{ form.phone_num }}</p>
-                {% if form.phone_num.errors %}
-                    {% for error in form.phone_num.errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
 
+                {{ form.country.errors }}
                 <p title="{{ form.country.help_text }}">
                     <strong>{{ form.country.label_tag }}</strong>
                     {{ form.country }}</p>
-                {% if form.country.errors %}
-                    {% for error in form.country.errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
 
+                {{ form.state.errors }}
                 <p title="{{ form.state.help_text }}">
                     <strong>{{ form.state.label_tag }}</strong>
                     {{ form.state }}</p>
-                {% if form.state.errors %}
-                    {% for error in form.state.errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
 
+                {{ form.license_num.errors }}
                 <p title="{{ form.license_num.help_text }}">
                     <strong><label for="{{ form.license_num.id_for_label }}">License Number:</label></strong>
                     {{ form.license_num }}</p>
-                {% if form.license_num.errors %}
-                    {% for error in form.license_num.errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
 
+                {{ form.license_expiry.errors }}
                 <p class="{% if profile.is_expired %}text-danger{% else %}text-success{% endif %}" title="{{ form.license_expiry.help_text }}">
                     <strong><label for="{{ form.license_expiry.id_for_label }}">License Expiration Date (YYYY-MM-DD):</label></strong>
                     {{ form.license_expiry }}</p>
-                {% if form.license_expiry.errors %}
-                    {% for error in form.license_expiry.errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
 
                 <p class="{% if profile.verified %}text-success{% else %}text-danger{% endif %}">
                     <strong>Verified:</strong> {{ profile.verified }}</p>
-
                 <!--car-->
                 <div style="margin-left:10px; margin-top:10px">
                     <hr>
@@ -150,6 +118,7 @@
                 </div>
             {% endfor %}
         {% endif %}
+
 
         <button type="submit", class="btn btn-primary">Update</button>
     </form>

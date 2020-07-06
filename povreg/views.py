@@ -118,7 +118,7 @@ def edit_user(request):
                 if formset.is_valid():
                     created_user.save()
                     #checking for changes that need verification
-                    changes = formset[0].changed_data
+                    changes = list(formset[0].changed_data)
 
                     #dropping items that driver can change w/out verification
                     if group is "driver":
@@ -130,6 +130,9 @@ def edit_user(request):
 
                     formset.save()
                     return HttpResponseRedirect('/povreg/profile_view')
+
+                else:
+                    print(formset.errors)
 
         return render(request, "povreg/profile_update.html", context={
             "profile": profile,
