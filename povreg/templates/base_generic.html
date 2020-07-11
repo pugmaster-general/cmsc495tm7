@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://unpkg.com/feather-icons"></script>
     <!-- Add additional CSS in static file -->
     {% load static %}
     <link rel="stylesheet" href=""{% static 'css/styles.css' %}">
@@ -30,26 +31,27 @@
                 {% endblock %}
             </div>
         <div class="row">
-            <div class="col-sm-2">
+            <div class="col-sm-2 sidebar-sticky">
 
                 {% block sidebar %}
-                    <ul class="sidebar-nav">
+                    <ul class="nav flex-column">
                         {% if user.is_authenticated %}
-                        <li><a href="{% url 'index' %}">Home</a></li>
-                        <li><a href="{% url 'logout' %}?next={{request.path}}">Logout</a> </li>
-                        <li><a href="{% url 'profile-view' %}">View/Update Profile</a></li>
+                        <li class="nav-item"><strong>{{ user|upper }}</strong></li>
+                        <li class="nav-item"><a href="{% url 'index' %}"><span data-feather="home"></span> Home</a></li>
+                        <li class="nav-item"><a href="{% url 'logout' %}?next={{request.path}}"><span data-feather="log-out"></span> Logout</a></li>
+                        <li class="nav-item"><a href="{% url 'profile-view' %}"><span data-feather="user"></span> Update Profile</a></li>
                         <hr>
                         {% if user.officer %}
-                        <li><a href="{% url 'drivers' %}">All Drivers</a></li>
-                        <li><a href="{% url 'cars' %}">All Vehicles</a></li>
-                        <li><a href="{% url 'insurance' %}">All Insurance</a></li>
+                        <li class="nav-item"><a href="{% url 'drivers' %}"><span data-feather="archive"></span> All Drivers</a></li>
+                        <li class="nav-item"><a href="{% url 'cars' %}"><span data-feather="archive"></span> All Vehicles</a></li>
+                        <li class="nav-item"><a href="{% url 'insurance' %}"><span data-feather="archive"></span> All Insurance</a></li>
                         <hr>
-                        <li><a href="{% url 'driver-search' %}">Find Driver</a></li>
-                        <li><a href="{% url 'car-search' %}">Find Vehicle</a></li>
-                        <li><a href="{% url 'insurance-search' %}">Find Insurance</a></li>
+                        <li class="nav-item"><a href="{% url 'driver-search' %}"><span data-feather="search"></span> Find Driver</a></li>
+                        <li class="nav-item"><a href="{% url 'car-search' %}"><span data-feather="search"></span> Find Vehicle</a></li>
+                        <li class="nav-item"><a href="{% url 'insurance-search' %}"><span data-feather="search"></span> Find Insurance</a></li>
                         {% endif %}
                         {% else %}
-                        <li><a href="{% url 'login' %}?next={{request.path}}">Login</a></li>
+                        <li class="nav-item"><a href="{% url 'login' %}?next={{request.path}}"><span data-feather="login"></span> Login</a></li>
                         {% endif %}
                     </ul>
                 {% endblock %}
@@ -81,5 +83,8 @@
             </div>
         </div>
     </div>
+    <script>
+        feather.replace()
+    </script>
 </body>
 </html>
