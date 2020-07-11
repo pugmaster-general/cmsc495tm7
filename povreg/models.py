@@ -15,18 +15,11 @@ class Driver(models.Model):
     # driver license number
     license_num = models.TextField(max_length=20, help_text='driver\'s license number', unique=True)
     license_expiry = models.DateField(help_text='driver\'s license expiration date')
-
-    # state
     state = models.TextField(max_length=30, help_text="State for the driver's license", blank=True)
     country = models.TextField(max_length=30, help_text="Country for the driver's license")
-
     phone_num = models.TextField(max_length=12, help_text="the driver's phone number")
-
     verified = models.BooleanField(help_text="whether driver data is verified by admin", default=False)
-
-    #can be blank and null for now, for the data
-    dob = models.DateField(help_text="driver's date of birth", blank=True, null=True)
-
+    dob = models.DateField(help_text="driver's date of birth")
     user = models.OneToOneField(User, on_delete=models.SET_NULL, blank=True, null=True,
                                 help_text="This is the user account that corresponds to the driver")
 
@@ -53,19 +46,17 @@ class Car(models.Model):
     v_make = models.TextField(max_length=30, help_text="vehicle's make")
     is_commercial = models.BooleanField(default=False,
                                         help_text="true if commercial vehicle, false if private. default is false")
-    v_plate = models.TextField(max_length=10, help_text="vehicle's license plate")
+    v_plate = models.TextField(max_length=10, help_text="vehicle's license plate", unique=True)
     owner = models.TextField(max_length=30, help_text="vehicle's owner")
     REPORTED_STATUS = {
-        ('st', 'stolen'),
-        ('go', 'good'),
+        ('stolen', 'stolen'),
+        ('good', 'good'),
     }
     status = models.TextField(choices=REPORTED_STATUS, default='go', help_text="vehicle's current reported status")
-
-    #can be blank and null for now, for the data
-    registration = models.TextField(max_length=30, help_text="vehicle registration", null=True, blank=True)
-    v_model = models.TextField(max_length=30, help_text="vehicle's model", null=True, blank=True)
-    v_state = models.TextField(max_length=30, help_text="vehicle's state of registration", null=True, blank=True)
-    v_country = models.TextField(max_length=30, help_text="vehicle's country of registration", null=True, blank=True)
+    registration = models.TextField(max_length=30, help_text="vehicle registration", unique=True)
+    v_model = models.TextField(max_length=30, help_text="vehicle's model")
+    v_state = models.TextField(max_length=30, help_text="vehicle's state of registration")
+    v_country = models.TextField(max_length=30, help_text="vehicle's country of registration")
 
     @property
     def is_insured(self):
@@ -101,11 +92,11 @@ class Insurance(models.Model):
     expiry = models.DateField(help_text="Insurance expiration date")
     coverage_type = models.TextField(max_length=30, help_text="type of insurance coverage")
     STATUS_TYPE = {
-        ('ex', 'Expired'),
-        ('su', 'Suspended'),
-        ('ac', 'Active'),
+        ('Expired', 'Expired'),
+        ('Suspended', 'Suspended'),
+        ('Active', 'Active'),
     }
-    status = models.TextField(choices=STATUS_TYPE, default='ac', help_text="vehicle's current insurance status")
+    status = models.TextField(choices=STATUS_TYPE, default='Active', help_text="vehicle's current insurance status")
 
     @property
     def is_expired(self):
@@ -129,15 +120,11 @@ class Officer(models.Model):
     unit = models.TextField(max_length=30, help_text="officer's division, district, or unit")
     region = models.TextField(max_length=30, help_text="officer's operating region (country, state, province)")
     id_num = models.TextField(max_length=30, help_text="officer's personal ID number", unique=True)
-
     verified = models.BooleanField(help_text="whether driver data is verified by admin", default=False)
+    first_name = models.TextField(max_length=30, help_text="officer's first name")
+    last_name = models.TextField(max_length=30, help_text="officer's last name")
+    rank = models.TextField(max_length=30, help_text="officer's current rank")
 
-    #can be blank and null for now, for the data
-    first_name = models.TextField(max_length=30, help_text="officer's first name", blank=True, null=True)
-    last_name = models.TextField(max_length=30, help_text="officer's last name", blank=True, null=True)
-    rank = models.TextField(max_length=30, help_text="officer's current rank", blank=True, null=True)
-
-    #using text field for now, may update to photo later
     id_photo = models.TextField(help_text="upload of the officer's photo ID", blank=True, null=True)
 
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True,
