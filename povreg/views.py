@@ -137,7 +137,7 @@ def edit_user(request):
             fields = ('last_name', 'first_name', 'phone_num', 'country', 'state', 'license_num', 'license_expiry')
             sub = Driver
             group = 'driver'
-        except Officer.DoesNotExist:
+        except Driver.DoesNotExist:
             pass
 
     for i in fields:
