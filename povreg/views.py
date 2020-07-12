@@ -1,14 +1,41 @@
 import django.contrib.auth.decorators
-from django.contrib.auth.models import User
+from django.contrib import messages
+from django.contrib.auth import login, authenticate, update_session_auth_hash
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.forms import PasswordChangeForm
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.forms.models import inlineformset_factory
 from django.forms import TextInput, DateInput
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, redirect
 from django.views import generic
 from .models import Car, Driver, Insurance, Officer
-from .forms import UserForm
+from .forms import UserForm, SignUpForm
+
+
+# signup view
+def signup(request):
+    if request.user.is_authenticated:
+        return redirect('index')
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.refresh_from_db()
+            new_user = Group.objects.get(name='NewUser')
+            new_user.user_set.add(user)
+            user_group = Group.objects.get(name=form.cleaned_data.get('type'))
+            user_group.user_set.add(user)
+            user.save()
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=user.username, password=raw_password)
+            login(request, user)
+            return redirect('index')
+
+    else:
+        form = SignUpForm()
+    return render(request, 'povreg/signup.html', {'form': form})
 
 
 # Create your views here.
@@ -42,14 +69,23 @@ def view_user(request):
 
     #query the user object with pk from logged in user
     user = User.objects.get(pk=pk)
-
+    full_display = True
+    profile = None
     #find user group
     if user.groups.filter(name='Officers').exists():
         group = 'officer'
-        profile = user.officer
+        try:
+            profile = user.officer
+        except Officer.DoesNotExist:
+            pass
+
     elif user.groups.filter(name='Drivers').exists():
         group = 'driver'
-        profile = user.driver
+        try:
+            profile = user.driver
+        except Driver.DoesNotExist:
+            pass
+
     else:
         group = 'none'
         profile = None
@@ -57,6 +93,7 @@ def view_user(request):
         'group': group,
         'user': user,
         'profile': profile,
+        #'full_display': full_display,
     }
 
     if request.user.is_authenticated and request.user.id == user.id:
@@ -81,17 +118,25 @@ def edit_user(request):
     widgets = dict()
     fields = ()
     profile = None
+    sub = None
+    group = None
     if user.groups.filter(name='Officers').exists():
-        fields = ('rank', 'region', 'unit')
-        sub = Officer
-        profile = user.officer
-        group = "officer"
+        try:
+            profile = user.Officer
+            fields = ('rank', 'region', 'unit')
+            sub = Officer
+            group = "officer"
+        except AttributeError:
+            pass
 
     elif user.groups.filter(name='Drivers').exists():
-        fields = ('last_name', 'first_name', 'phone_num', 'country', 'state', 'license_num', 'license_expiry')
-        sub = Driver
-        profile = user.driver
-        group = 'driver'
+        try:
+            profile = user.driver
+            fields = ('last_name', 'first_name', 'phone_num', 'country', 'state', 'license_num', 'license_expiry')
+            sub = Driver
+            group = 'driver'
+        except AttributeError:
+            pass
 
     else:
         sub = None
@@ -103,36 +148,40 @@ def edit_user(request):
     if profile is Driver:
         widgets['license_expiry'] = DateInput()
 
-    profile_inlineformset = inlineformset_factory(User, sub, fields=fields, widgets=widgets, can_delete=False)
-    formset = profile_inlineformset(instance=user)
+    if sub is not None:
+        profile_inlineformset = inlineformset_factory(User, sub, fields=fields, widgets=widgets, can_delete=False)
+        formset = profile_inlineformset(instance=user)
+    else:
+        formset = None
 
     if request.user.is_authenticated and request.user.id == user.id:
         if request.method == "POST":
             user_form = UserForm(request.POST, request.FILES, instance=user)
-            formset = profile_inlineformset(request.POST, request.FILES, instance=user)
+            if formset is not None:
+                formset = profile_inlineformset(request.POST, request.FILES, instance=user)
 
             if user_form.is_valid():
                 created_user = user_form.save(commit=False)
-                formset = profile_inlineformset(request.POST, request.FILES, instance=created_user)
+                if formset is not None:
+                    formset = profile_inlineformset(request.POST, request.FILES, instance=created_user)
+                    if formset.is_valid():
+                        created_user.save()
+                        #checking for changes that need verification
+                        changes = list(formset[0].changed_data)
 
-                if formset.is_valid():
-                    created_user.save()
-                    #checking for changes that need verification
-                    changes = list(formset[0].changed_data)
+                        #dropping items that driver can change w/out verification
+                        if group is "driver":
+                            if changes.count('phone_num') > 0:
+                                changes.pop(changes.index('phone_num'))
 
-                    #dropping items that driver can change w/out verification
-                    if group is "driver":
-                        if changes.count('phone_num') > 0:
-                            changes.pop(changes.index('phone_num'))
+                            if len(changes) > 0:
+                                user.driver.verified = False
 
-                        if len(changes) > 0:
-                            user.driver.verified = False
-
-                    formset.save()
-                    return HttpResponseRedirect('/povreg/profile_view')
-
+                        formset.save()
+                        return HttpResponseRedirect('/povreg/profile_view')
                 else:
-                    print(formset.errors)
+                    created_user.save()
+                    return HttpResponseRedirect('/povreg/profile_view')
 
         return render(request, "povreg/profile_update.html", context={
             "profile": profile,
@@ -142,6 +191,23 @@ def edit_user(request):
         })
     else:
         raise PermissionDenied
+
+
+#change password
+@django.contrib.auth.decorators.login_required()
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user) # this has to happen otherwise user gets logged out
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('change-password')
+        else:
+            messages.error(request, 'Please fix errors below')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'povreg/change_password.html', {'form': form})
 
 
 # car list view

@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView
+from povreg import views as povreg_views
 
 
 urlpatterns = [
@@ -25,6 +26,8 @@ urlpatterns = [
     path('povreg/', include('povreg.urls')),
     path('', RedirectView.as_view(url='povreg/', permanent=True)),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('signup/', povreg_views.signup, name="signup"),
+    path('password/', povreg_views.change_password, name="change-password")
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
