@@ -40,6 +40,7 @@
                         <li class="nav-item"><a href="{% url 'index' %}"><span data-feather="home"></span> Home</a></li>
                         <li class="nav-item"><a href="{% url 'logout' %}?next={{request.path}}"><span data-feather="log-out"></span> Logout</a></li>
                         <li class="nav-item"><a href="{% url 'profile-view' %}"><span data-feather="user"></span> Update Profile</a></li>
+                        <li class="nav-item"><a href="{% url 'change-password' %}"><span data-feather="key"></span> Change Password </a></li>
                         <hr>
                         {% if user.officer %}
                         <li class="nav-item"><a href="{% url 'drivers' %}"><span data-feather="archive"></span> All Drivers</a></li>
@@ -51,7 +52,7 @@
                         <li class="nav-item"><a href="{% url 'insurance-search' %}"><span data-feather="search"></span> Find Insurance</a></li>
                         {% endif %}
                         {% else %}
-                        <li class="nav-item"><a href="{% url 'login' %}?next={{request.path}}"><span data-feather="login"></span> Login</a></li>
+                        <li class="nav-item"><a href="{% url 'login' %}?next={{request.path}}"><span data-feather="log-in"></span> Login</a></li>
                         {% endif %}
                     </ul>
                 {% endblock %}
