@@ -122,25 +122,23 @@ def edit_user(request):
     group = None
     if user.groups.filter(name='Officers').exists():
         try:
-            profile = user.Officer
+            profile = user.officer
+            print(profile)
             fields = ('rank', 'region', 'unit')
             sub = Officer
             group = "officer"
-        except AttributeError:
+        except Officer.DoesNotExist:
             pass
 
     elif user.groups.filter(name='Drivers').exists():
         try:
             profile = user.driver
+            print(profile)
             fields = ('last_name', 'first_name', 'phone_num', 'country', 'state', 'license_num', 'license_expiry')
             sub = Driver
             group = 'driver'
-        except AttributeError:
+        except Officer.DoesNotExist:
             pass
-
-    else:
-        sub = None
-        group = None
 
     for i in fields:
         widgets[str(i)] = TextInput()
