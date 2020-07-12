@@ -214,7 +214,9 @@ class CarListView(UserPassesTestMixin, generic.ListView):
     paginate_by = 25
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Officers').exists()
+        group_check = self.request.user.groups.filter(name='Officers').exists()
+        verified_check = self.request.user.officer.verified
+        return group_check and verified_check
 
 
 # car detail view
@@ -222,7 +224,9 @@ class CarDetailView(UserPassesTestMixin, generic.DetailView):
     model = Car
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Officers').exists()
+        group_check = self.request.user.groups.filter(name='Officers').exists()
+        verified_check = self.request.user.officer.verified
+        return group_check and verified_check
 
 
 # car search form
@@ -230,7 +234,9 @@ class CarSearchForm(UserPassesTestMixin, generic.TemplateView):
     template_name = 'povreg/car_search.html'
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Officers').exists()
+        group_check = self.request.user.groups.filter(name='Officers').exists()
+        verified_check = self.request.user.officer.verified
+        return group_check and verified_check
 
 
 # car search results view
@@ -263,7 +269,9 @@ class CarSearchResultsView(UserPassesTestMixin, generic.ListView):
         return object_list
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Officers').exists()
+        group_check = self.request.user.groups.filter(name='Officers').exists()
+        verified_check = self.request.user.officer.verified
+        return group_check and verified_check
 
 
 # driver list view
@@ -272,7 +280,9 @@ class DriverListView(UserPassesTestMixin, generic.ListView):
     paginate_by = 25
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Officers').exists()
+        group_check = self.request.user.groups.filter(name='Officers').exists()
+        verified_check = self.request.user.officer.verified
+        return group_check and verified_check
 
 
 # driver detail view
@@ -280,7 +290,9 @@ class DriverDetailView(UserPassesTestMixin, generic.DetailView):
     model = Driver
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Officers').exists()
+        group_check = self.request.user.groups.filter(name='Officers').exists()
+        verified_check = self.request.user.officer.verified
+        return group_check and verified_check
 
 
 # driver search form
@@ -288,7 +300,9 @@ class DriverSearchForm(UserPassesTestMixin, generic.TemplateView):
     template_name = 'povreg/driver_search.html'
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Officers').exists()
+        group_check = self.request.user.groups.filter(name='Officers').exists()
+        verified_check = self.request.user.officer.verified
+        return group_check and verified_check
 
 
 # driver search results view
@@ -324,7 +338,9 @@ class DriverSearchResultsView(UserPassesTestMixin, generic.ListView):
         return object_list
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Officers').exists()
+        group_check = self.request.user.groups.filter(name='Officers').exists()
+        verified_check = self.request.user.officer.verified
+        return group_check and verified_check
 
 
 # insurance list view
@@ -333,14 +349,18 @@ class InsuranceListView(UserPassesTestMixin, generic.ListView):
     paginate_by = 25
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Officers').exists()
+        group_check = self.request.user.groups.filter(name='Officers').exists()
+        verified_check = self.request.user.officer.verified
+        return group_check and verified_check
 
 
 class InsuranceDetailView(UserPassesTestMixin, generic.DetailView):
     model = Insurance
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Officers').exists()
+        group_check = self.request.user.groups.filter(name='Officers').exists()
+        verified_check = self.request.user.officer.verified
+        return group_check and verified_check
 
 
 # insurance search form
@@ -348,7 +368,9 @@ class InsuranceSearchForm(UserPassesTestMixin, generic.TemplateView):
     template_name = 'povreg/insurance_search.html'
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Officers').exists()
+        group_check = self.request.user.groups.filter(name='Officers').exists()
+        verified_check = self.request.user.officer.verified
+        return group_check and verified_check
 
 
 # insurance search results view
@@ -372,4 +394,6 @@ class InsuranceSearchResultsView(UserPassesTestMixin, generic.ListView):
         return object_list
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Officers').exists()
+        group_check = self.request.user.groups.filter(name='Officers').exists()
+        verified_check = self.request.user.officer.verified
+        return group_check and verified_check

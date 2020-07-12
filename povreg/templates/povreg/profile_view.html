@@ -22,6 +22,8 @@
 <p><strong>Unit:</strong> {{ profile.unit }}</p>
 <p><strong>Badge Number:</strong> {{ profile.badge_num }}</p>
 <p><strong>ID Number:</strong> {{ profile.id_num }}</p>
+<p class="{% if profile.verified %}text-success{% else %}text-danger{% endif %}">
+    <strong>Verified:</strong> {{ profile.verified }}</p>
 
 {% elif group == "driver" %}
 <p><strong>Last Name:</strong> {{ profile.last_name }}</p>

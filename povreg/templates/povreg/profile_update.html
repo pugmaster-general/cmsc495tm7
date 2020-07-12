@@ -51,6 +51,8 @@
 
                 <p><strong>Badge Number:</strong> {{ profile.badge_num }}</p>
                 <p><strong>ID Number:</strong> {{ profile.id_num }}</p>
+                <p class="{% if profile.verified %}text-success{% else %}text-danger{% endif %}">
+                    <strong>Verified:</strong> {{ profile.verified }}</p>
             {% endfor %}
 
         {% elif group == "driver" %}

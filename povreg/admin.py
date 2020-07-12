@@ -53,13 +53,13 @@ class CarAdmin(admin.ModelAdmin):
     )
 
 
-def verify_driver(modelAdmin, request, queryset):
-    for driver in queryset:
-        driver.verified = True
-        driver.save()
+def verify_item(modelAdmin, request, queryset):
+    for item in queryset:
+        item.verified = True
+        item.save()
 
 
-verify_driver.short_description = "Verify Data"
+verify_item.short_description = "Verify Data"
 
 
 @admin.register(Driver)
@@ -92,7 +92,7 @@ class DriverAdmin(admin.ModelAdmin):
         })
     )
     inlines = [CarInline, InsuranceInline]
-    actions = [verify_driver, ]
+    actions = [verify_item, ]
 
 
 @admin.register(Insurance)
@@ -136,8 +136,9 @@ class OfficerAdmin(admin.ModelAdmin):
         'badge_num',
         'id_num',
         'id_photo',
+        'verified',
     )
-    list_filter = ('region', 'unit')
+    list_filter = ('region', 'unit', 'verified')
     fieldsets = (
         (None, {
             'fields': ('rank', 'last_name', 'first_name')
@@ -153,3 +154,5 @@ class OfficerAdmin(admin.ModelAdmin):
         })
 
     )
+    actions = [verify_item, ]
+
